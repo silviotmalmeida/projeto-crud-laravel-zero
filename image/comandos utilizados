@@ -1,0 +1,17 @@
+sudo docker run -it ubuntu:20.04
+
+    apt update
+
+    apt install php7.4-cli php7.4-curl php7.4-mbstring php7.4-xml curl unzip
+
+    cd ~
+    
+    curl -sS https://getcomposer.org/installer -o composer-setup.php
+
+    php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+
+    exit
+
+sudo docker commit (id do container obtido em sudo docker ps -a) crud-laravel-zero
+
+sudo docker save crud-laravel-zero > crud-laravel-zero.tar

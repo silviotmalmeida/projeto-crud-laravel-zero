@@ -1,0 +1,20 @@
+version: '3.5'
+
+services:
+
+  #nome do servico
+  crud-laravel-zero:
+
+    #construido a partir de uma imagem customizada em ./image
+    image: crud-laravel-zero
+    
+    #nome do conteiner
+    container_name: crud-laravel-zero
+
+    #pastas compartilhadas
+    volumes:
+      #pasta do codigo fonte da aplicacao
+      - "./app:/root"
+  
+    #artifício para manter o container aberto
+    tty: true
