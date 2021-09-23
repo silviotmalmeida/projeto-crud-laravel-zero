@@ -1,0 +1,1 @@
+Para criar um comando utiliza: php application make:command nomeDoComando

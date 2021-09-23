@@ -1,0 +1,1 @@
+Para adicionar suporte a banco de dados utiliza: php application app:install database
