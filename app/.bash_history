@@ -42,3 +42,19 @@ php application make:command ListProducts
 cd ~/entrada-saida/
 php application make:command ListProducts
 exit
+ls
+cd root/entrada-saida/
+php application make:command EditProduct
+exit
+cd root/entrada-saida/
+php application make:model User -m
+exit
+cd root/entrada-saida/
+php application migrate
+exit
+cd root/entrada-saida/
+php application make:command AddUser
+exit
+cd root/entrada-saida/
+php application make:command ListUsers
+exit
