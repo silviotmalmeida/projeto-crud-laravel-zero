@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUsersTable extends Migration
+class CreateClientsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,8 +15,8 @@ class CreateUsersTable extends Migration
     // acoes a serem realizadas na aplicacao da migration
     public function up()
     {
-        // criando a tabela users
-        Schema::create('users', function (Blueprint $table) {
+        // criando a tabela clients
+        Schema::create('clients', function (Blueprint $table) {
 
             // chave primaria
             $table->id();
@@ -24,11 +24,11 @@ class CreateUsersTable extends Migration
             // coluna de nome, obrigatoria
             $table->string('name');
 
-            // coluna de username, obrigatoria e unica
-            $table->string('username')->unique();
+            // coluna de email, obrigatoria
+            $table->string('email');
 
-            // coluna de password, obrigatoria
-            $table->string('password');
+            // coluna de whatsapp, obrigatoria
+            $table->string('whatsapp');
 
             // colunas de timestamp de cadastro e atualizacao
             $table->timestamps();
@@ -44,7 +44,7 @@ class CreateUsersTable extends Migration
     // acoes a serem realizadas no rollback da migration
     public function down()
     {
-        // apagando a tabela users
-        Schema::dropIfExists('users');
+        // apagando a tabela clients
+        Schema::dropIfExists('clients');
     }
 }

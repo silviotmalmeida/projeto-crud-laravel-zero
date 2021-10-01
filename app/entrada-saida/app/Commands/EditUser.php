@@ -2,11 +2,11 @@
 
 namespace App\Commands;
 
-use App\Models\Product;
+use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-class EditProduct extends Command
+class EditUser extends Command
 {
     /**
      * The signature of the command.
@@ -15,7 +15,7 @@ class EditProduct extends Command
      */
 
     // texto do comando
-    protected $signature = 'product:edit';
+    protected $signature = 'user:edit';
 
     /**
      * The description of the command.
@@ -24,7 +24,7 @@ class EditProduct extends Command
      */
 
     // descricao do comando
-    protected $description = 'Edita um produto';
+    protected $description = 'Edita um usuário';
 
     /**
      * Execute the console command.
@@ -35,50 +35,47 @@ class EditProduct extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os produtos cadastrados no banco de dados, conforme atributos abaixo:
-        $products = Product::all(['id', 'name', 'description', 'value', 'qtd']);
+        // obtendo os usuarios cadastrados no banco de dados, conforme atributos abaixo:
+        $users = User::all(['id', 'name', 'username', 'password']);
 
         // imprimindo tabela de registros na tela
-        $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
+        $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
 
         // exibe o titulo
-        $this->info('Edição de produto');
+        $this->info('Edição de usuário');
 
         // laco de verificação de id valido.
         // sera repetido ate ser fornecido um id valido
         do {
             // pergunta o ID
-            $id = $this->ask('Informe o ID do produto a ser editado:');
+            $id = $this->ask('Informe o ID do usuários a ser editado:');
 
-            // obtendo os dados do produto selecionado no banco de dados
-            $product = Product::find($id);
+            // obtendo os dados do usuario selecionado no banco de dados
+            $user = User::find($id);
 
-            if (is_null($product)) {
+            if (is_null($user)) {
 
                 $this->info('Favor informar um ID válido!');
             }
-        } while (is_null($product));
+        } while (is_null($user));
 
         // pergunta o nome
-        $name = $this->ask('Nome:', $product->name);
+        $name = $this->ask('Nome:', $user->name);
 
         // pergunta a descricao
-        $description = $this->ask('Descricao:', $product->description);
+        $username = $this->ask('Usuário:', $user->username);
 
         // pergunta o valor
-        $value = $this->ask('Valor(R$):', $product->value);
-
-        // pergunta a quantidade
-        $qtd = $this->ask('Quantidade:', $product->qtd);
+        $password = $this->ask('Senha:', $user->password);
 
         // parando a execucao e imprimindo os valores na tela
-        // dd(compact('name', 'description', 'value', 'qtd'));
+        // dd(compact('name', 'username', 'password'));
 
         // inserindo os dados no banco de dados
-        $product->update(compact('name', 'description', 'value', 'qtd'));
+        $user->update(compact('name', 'username', 'password'));
 
         // exibe a mensagem de sucesso
-        $this->info("Produto $product->name editado com sucesso!");
+        $this->info("Usuário $user->username editado com sucesso!");
     }
 
     /**

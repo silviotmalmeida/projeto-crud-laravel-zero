@@ -58,3 +58,15 @@ exit
 cd root/entrada-saida/
 php application make:command ListUsers
 exit
+cd root/entrada-saida/
+php application make:command EditUser
+exit
+cd root/entrada-saida/
+php application make:model Client -m
+exit
+cd root/entrada-saida/
+php application migrate
+exit
+cd root/entrada-saida/
+php application make:command DeleteProduct
+exit

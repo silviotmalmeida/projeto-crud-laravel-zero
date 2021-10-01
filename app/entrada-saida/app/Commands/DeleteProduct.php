@@ -6,7 +6,7 @@ use App\Models\Product;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-class EditProduct extends Command
+class DeleteProduct extends Command
 {
     /**
      * The signature of the command.
@@ -15,7 +15,7 @@ class EditProduct extends Command
      */
 
     // texto do comando
-    protected $signature = 'product:edit';
+    protected $signature = 'product:delete';
 
     /**
      * The description of the command.
@@ -24,7 +24,7 @@ class EditProduct extends Command
      */
 
     // descricao do comando
-    protected $description = 'Edita um produto';
+    protected $description = 'Remove um produto';
 
     /**
      * Execute the console command.
@@ -42,13 +42,13 @@ class EditProduct extends Command
         $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
 
         // exibe o titulo
-        $this->info('Edição de produto');
+        $this->info('Remoção de produto');
 
         // laco de verificação de id valido.
         // sera repetido ate ser fornecido um id valido
         do {
             // pergunta o ID
-            $id = $this->ask('Informe o ID do produto a ser editado:');
+            $id = $this->ask('Informe o ID do produto a ser removido:');
 
             // obtendo os dados do produto selecionado no banco de dados
             $product = Product::find($id);
@@ -59,26 +59,18 @@ class EditProduct extends Command
             }
         } while (is_null($product));
 
-        // pergunta o nome
-        $name = $this->ask('Nome:', $product->name);
+        if ($this->confirm("Deseja realmente remover o produto: $product->name?", false)) {
 
-        // pergunta a descricao
-        $description = $this->ask('Descricao:', $product->description);
+            // removendo os dados no banco de dados
+            $product->delete();
 
-        // pergunta o valor
-        $value = $this->ask('Valor(R$):', $product->value);
+            // exibe a mensagem de sucesso
+            $this->info("Produto $product->name removido com sucesso!");
+        } else {
 
-        // pergunta a quantidade
-        $qtd = $this->ask('Quantidade:', $product->qtd);
-
-        // parando a execucao e imprimindo os valores na tela
-        // dd(compact('name', 'description', 'value', 'qtd'));
-
-        // inserindo os dados no banco de dados
-        $product->update(compact('name', 'description', 'value', 'qtd'));
-
-        // exibe a mensagem de sucesso
-        $this->info("Produto $product->name editado com sucesso!");
+            // exibe a mensagem de cancelamento
+            $this->info("Operação cancelada!");
+        }
     }
 
     /**
