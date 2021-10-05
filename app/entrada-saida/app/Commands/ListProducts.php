@@ -45,7 +45,7 @@ class ListProducts extends Command
             $this->info('Não existem produtos cadastrados!');
             $this->info('');
         }
-        // senao:
+        // senao prossegue:
         else {
 
             // imprimindo tabela de registros na tela

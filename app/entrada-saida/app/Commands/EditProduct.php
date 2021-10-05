@@ -38,47 +38,58 @@ class EditProduct extends Command
         // obtendo os produtos cadastrados no banco de dados, conforme atributos abaixo:
         $products = Product::all(['id', 'name', 'description', 'value', 'qtd']);
 
-        // imprimindo tabela de registros na tela
-        $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
+        // caso não retornem resultados:
+        if ($products->isEmpty()) {
 
-        // exibe o titulo
-        $this->info('Edição de produto');
+            // imprimindo mensagem
+            $this->info('Não existem produtos cadastrados!');
+            $this->info('');
+        }
+        // senao prossegue:
+        else {
 
-        // laco de verificação de id valido.
-        // sera repetido ate ser fornecido um id valido
-        do {
-            // pergunta o ID
-            $id = $this->ask('Informe o ID do produto a ser editado:');
+            // imprimindo tabela de registros na tela
+            $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
 
-            // obtendo os dados do produto selecionado no banco de dados
-            $product = Product::find($id);
+            // exibe o titulo
+            $this->info('Edição de produto');
 
-            if (is_null($product)) {
+            // laco de verificação de id valido.
+            // sera repetido ate ser fornecido um id valido
+            do {
+                // pergunta o ID
+                $id = $this->ask('Informe o ID do produto a ser editado:');
 
-                $this->info('Favor informar um ID válido!');
-            }
-        } while (is_null($product));
+                // obtendo os dados do produto selecionado no banco de dados
+                $product = Product::find($id);
 
-        // pergunta o nome
-        $name = $this->ask('Nome:', $product->name);
+                if (is_null($product)) {
 
-        // pergunta a descricao
-        $description = $this->ask('Descricao:', $product->description);
+                    $this->info('Favor informar um ID válido!');
+                }
+            } while (is_null($product));
 
-        // pergunta o valor
-        $value = $this->ask('Valor(R$):', $product->value);
+            // pergunta o nome
+            $name = $this->ask('Nome:', $product->name);
 
-        // pergunta a quantidade
-        $qtd = $this->ask('Quantidade:', $product->qtd);
+            // pergunta a descricao
+            $description = $this->ask('Descricao:', $product->description);
 
-        // parando a execucao e imprimindo os valores na tela
-        // dd(compact('name', 'description', 'value', 'qtd'));
+            // pergunta o valor
+            $value = $this->ask('Valor(R$):', $product->value);
 
-        // inserindo os dados no banco de dados
-        $product->update(compact('name', 'description', 'value', 'qtd'));
+            // pergunta a quantidade
+            $qtd = $this->ask('Quantidade:', $product->qtd);
 
-        // exibe a mensagem de sucesso
-        $this->info("Produto $product->name editado com sucesso!");
+            // parando a execucao e imprimindo os valores na tela
+            // dd(compact('name', 'description', 'value', 'qtd'));
+
+            // inserindo os dados no banco de dados
+            $product->update(compact('name', 'description', 'value', 'qtd'));
+
+            // exibe a mensagem de sucesso
+            $this->info("Produto $product->name editado com sucesso!");
+        }
     }
 
     /**

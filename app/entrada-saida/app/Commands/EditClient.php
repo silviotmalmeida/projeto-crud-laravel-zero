@@ -2,11 +2,11 @@
 
 namespace App\Commands;
 
-use App\Models\User;
+use App\Models\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-class EditUser extends Command
+class EditClient extends Command
 {
     /**
      * The signature of the command.
@@ -15,7 +15,7 @@ class EditUser extends Command
      */
 
     // texto do comando
-    protected $signature = 'user:edit';
+    protected $signature = 'client:edit';
 
     /**
      * The description of the command.
@@ -24,7 +24,7 @@ class EditUser extends Command
      */
 
     // descricao do comando
-    protected $description = 'Edita um usuário';
+    protected $description = 'Edita um cliente';
 
     /**
      * Execute the console command.
@@ -35,57 +35,57 @@ class EditUser extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os usuarios cadastrados no banco de dados, conforme atributos abaixo:
-        $users = User::all(['id', 'name', 'username', 'password']);
+        // obtendo os clientes cadastrados no banco de dados, conforme atributos abaixo:
+        $clients = Client::all(['id', 'name', 'email', 'whatsapp']);
 
         // caso não retornem resultados:
-        if ($users->isEmpty()) {
+        if ($clients->isEmpty()) {
 
             // imprimindo mensagem
-            $this->info('Não existem usuários cadastrados!');
+            $this->info('Não existem clientes cadastrados!');
             $this->info('');
         }
         // senao prossegue:
         else {
 
             // imprimindo tabela de registros na tela
-            $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
+            $this->table(['ID', 'Nome', 'Email', 'Whatsapp'], $clients);
 
             // exibe o titulo
-            $this->info('Edição de usuário');
+            $this->info('Edição de cliente');
 
             // laco de verificação de id valido.
             // sera repetido ate ser fornecido um id valido
             do {
                 // pergunta o ID
-                $id = $this->ask('Informe o ID do usuários a ser editado:');
+                $id = $this->ask('Informe o ID do cliente a ser removido:');
 
-                // obtendo os dados do usuario selecionado no banco de dados
-                $user = User::find($id);
+                // obtendo os dados do cliente selecionado no banco de dados
+                $client = Client::find($id);
 
-                if (is_null($user)) {
+                if (is_null($client)) {
 
                     $this->info('Favor informar um ID válido!');
                 }
-            } while (is_null($user));
+            } while (is_null($client));
 
             // pergunta o nome
-            $name = $this->ask('Nome:', $user->name);
+            $name = $this->ask('Nome:', $client->name);
 
-            // pergunta a descricao
-            $username = $this->ask('Usuário:', $user->username);
+            // pergunta a email
+            $email = $this->ask('Email:', $client->email);
 
-            // pergunta o valor
-            $password = $this->ask('Senha:', $user->password);
+            // pergunta o whatsapp
+            $whatsapp = $this->ask('Whatsapp:', $client->whatsapp);
 
             // parando a execucao e imprimindo os valores na tela
-            // dd(compact('name', 'username', 'password'));
+            // dd(compact('name', 'email', 'whatsapp'));
 
             // inserindo os dados no banco de dados
-            $user->update(compact('name', 'username', 'password'));
+            $client->update(compact('name', 'email', 'whatsapp'));
 
             // exibe a mensagem de sucesso
-            $this->info("Usuário $user->username editado com sucesso!");
+            $this->info("Cliente $client->name editado com sucesso!");
         }
     }
 

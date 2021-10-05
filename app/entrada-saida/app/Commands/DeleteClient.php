@@ -2,11 +2,11 @@
 
 namespace App\Commands;
 
-use App\Models\Product;
+use App\Models\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-class DeleteProduct extends Command
+class DeleteClient extends Command
 {
     /**
      * The signature of the command.
@@ -15,7 +15,7 @@ class DeleteProduct extends Command
      */
 
     // texto do comando
-    protected $signature = 'product:delete';
+    protected $signature = 'client:delete';
 
     /**
      * The description of the command.
@@ -24,7 +24,7 @@ class DeleteProduct extends Command
      */
 
     // descricao do comando
-    protected $description = 'Remove um produto';
+    protected $description = 'Remove um cliente';
 
     /**
      * Execute the console command.
@@ -35,47 +35,47 @@ class DeleteProduct extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os produtos cadastrados no banco de dados, conforme atributos abaixo:
-        $products = Product::all(['id', 'name', 'description', 'value', 'qtd']);
+        // obtendo os clientes cadastrados no banco de dados, conforme atributos abaixo:
+        $clients = Client::all(['id', 'name', 'email', 'whatsapp']);
 
         // caso não retornem resultados:
-        if ($products->isEmpty()) {
+        if ($clients->isEmpty()) {
 
             // imprimindo mensagem
-            $this->info('Não existem produtos cadastrados!');
+            $this->info('Não existem clientes cadastrados!');
             $this->info('');
         }
         // senao prossegue:
         else {
 
             // imprimindo tabela de registros na tela
-            $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
+            $this->table(['ID', 'Nome', 'Email', 'Whatsapp'], $clients);
 
             // exibe o titulo
-            $this->info('Remoção de produto');
+            $this->info('Remoção de cliente');
 
             // laco de verificação de id valido.
             // sera repetido ate ser fornecido um id valido
             do {
                 // pergunta o ID
-                $id = $this->ask('Informe o ID do produto a ser removido:');
+                $id = $this->ask('Informe o ID do cliente a ser removido:');
 
-                // obtendo os dados do produto selecionado no banco de dados
-                $product = Product::find($id);
+                // obtendo os dados do cliente selecionado no banco de dados
+                $client = Client::find($id);
 
-                if (is_null($product)) {
+                if (is_null($client)) {
 
                     $this->info('Favor informar um ID válido!');
                 }
-            } while (is_null($product));
+            } while (is_null($client));
 
-            if ($this->confirm("Deseja realmente remover o produto: $product->name?", false)) {
+            if ($this->confirm("Deseja realmente remover o cliente: $client->name?", false)) {
 
                 // removendo os dados no banco de dados
-                $product->delete();
+                $client->delete();
 
                 // exibe a mensagem de sucesso
-                $this->info("Produto $product->name removido com sucesso!");
+                $this->info("Cliente $client->name removido com sucesso!");
             } else {
 
                 // exibe a mensagem de cancelamento

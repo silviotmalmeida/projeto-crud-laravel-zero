@@ -2,11 +2,11 @@
 
 namespace App\Commands;
 
-use App\Models\User;
+use App\Models\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-class ListUsers extends Command
+class ListClient extends Command
 {
     /**
      * The signature of the command.
@@ -15,7 +15,7 @@ class ListUsers extends Command
      */
 
     // texto do comando
-    protected $signature = 'user:list';
+    protected $signature = 'client:list';
 
     /**
      * The description of the command.
@@ -24,7 +24,7 @@ class ListUsers extends Command
      */
 
     // descricao do comando
-    protected $description = 'Lista todos os usuários';
+    protected $description = 'Lista todos os clientes';
 
     /**
      * Execute the console command.
@@ -35,21 +35,21 @@ class ListUsers extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os usuarios cadastrados no banco de dados, conforme atributos abaixo:
-        $users = User::all(['id', 'name', 'username', 'password']);
+        // obtendo os clientes cadastrados no banco de dados, conforme atributos abaixo:
+        $clients = Client::all(['id', 'name', 'email', 'whatsapp']);
 
         // caso não retornem resultados:
-        if ($users->isEmpty()) {
+        if ($clients->isEmpty()) {
 
             // imprimindo mensagem
-            $this->info('Não existem usuários cadastrados!');
+            $this->info('Não existem clientes cadastrados!');
             $this->info('');
         }
         // senao prossegue:
         else {
 
             // imprimindo tabela de registros na tela
-            $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
+            $this->table(['ID', 'Nome', 'Email', 'Whatsapp'], $clients);
             $this->info('');
         }
     }

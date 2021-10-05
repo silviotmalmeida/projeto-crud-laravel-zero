@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-class EditUser extends Command
+class DeleteUser extends Command
 {
     /**
      * The signature of the command.
@@ -15,7 +15,7 @@ class EditUser extends Command
      */
 
     // texto do comando
-    protected $signature = 'user:edit';
+    protected $signature = 'user:delete';
 
     /**
      * The description of the command.
@@ -24,7 +24,7 @@ class EditUser extends Command
      */
 
     // descricao do comando
-    protected $description = 'Edita um usuário';
+    protected $description = 'Remove um usuário';
 
     /**
      * Execute the console command.
@@ -36,7 +36,7 @@ class EditUser extends Command
     public function handle()
     {
         // obtendo os usuarios cadastrados no banco de dados, conforme atributos abaixo:
-        $users = User::all(['id', 'name', 'username', 'password']);
+        $users = User::all(['id', 'name', 'username', 'password',]);
 
         // caso não retornem resultados:
         if ($users->isEmpty()) {
@@ -52,15 +52,15 @@ class EditUser extends Command
             $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
 
             // exibe o titulo
-            $this->info('Edição de usuário');
+            $this->info('Remoção de usuário');
 
             // laco de verificação de id valido.
             // sera repetido ate ser fornecido um id valido
             do {
                 // pergunta o ID
-                $id = $this->ask('Informe o ID do usuários a ser editado:');
+                $id = $this->ask('Informe o ID do usuário a ser removido:');
 
-                // obtendo os dados do usuario selecionado no banco de dados
+                // obtendo os dados do produto selecionado no banco de dados
                 $user = User::find($id);
 
                 if (is_null($user)) {
@@ -69,23 +69,18 @@ class EditUser extends Command
                 }
             } while (is_null($user));
 
-            // pergunta o nome
-            $name = $this->ask('Nome:', $user->name);
+            if ($this->confirm("Deseja realmente remover o usuárop: $user->name?", false)) {
 
-            // pergunta a descricao
-            $username = $this->ask('Usuário:', $user->username);
+                // removendo os dados no banco de dados
+                $user->delete();
 
-            // pergunta o valor
-            $password = $this->ask('Senha:', $user->password);
+                // exibe a mensagem de sucesso
+                $this->info("Usuário $user->name removido com sucesso!");
+            } else {
 
-            // parando a execucao e imprimindo os valores na tela
-            // dd(compact('name', 'username', 'password'));
-
-            // inserindo os dados no banco de dados
-            $user->update(compact('name', 'username', 'password'));
-
-            // exibe a mensagem de sucesso
-            $this->info("Usuário $user->username editado com sucesso!");
+                // exibe a mensagem de cancelamento
+                $this->info("Operação cancelada!");
+            }
         }
     }
 

@@ -70,3 +70,15 @@ exit
 cd root/entrada-saida/
 php application make:command DeleteProduct
 exit
+php application make:command AddClient
+cd root/entrada-saida/
+php application make:command AddClient
+exit
+cd root/entrada-saida/
+php application make:command DeleteUser
+php application make:command DeleteClient
+exit
+cd root/entrada-saida/
+php application make:command EditClient
+php application make:command ListClient
+exit
