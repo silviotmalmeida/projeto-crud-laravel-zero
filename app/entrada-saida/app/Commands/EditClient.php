@@ -63,8 +63,10 @@ class EditClient extends Command
                 // obtendo os dados do cliente selecionado no banco de dados
                 $client = Client::find($id);
 
+                // se o cliente não existir:
                 if (is_null($client)) {
 
+                    // envia mensagem
                     $this->info('Favor informar um ID válido!');
                 }
             } while (is_null($client));

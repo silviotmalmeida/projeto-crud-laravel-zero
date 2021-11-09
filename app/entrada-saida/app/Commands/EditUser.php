@@ -63,8 +63,10 @@ class EditUser extends Command
                 // obtendo os dados do usuario selecionado no banco de dados
                 $user = User::find($id);
 
+                // se o usuario não existir:
                 if (is_null($user)) {
 
+                    // envia mensagem
                     $this->info('Favor informar um ID válido!');
                 }
             } while (is_null($user));

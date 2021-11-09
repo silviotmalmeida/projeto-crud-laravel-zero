@@ -63,8 +63,10 @@ class DeleteProduct extends Command
                 // obtendo os dados do produto selecionado no banco de dados
                 $product = Product::find($id);
 
+                // se o produto não existir:
                 if (is_null($product)) {
 
+                    // envia mensagem
                     $this->info('Favor informar um ID válido!');
                 }
             } while (is_null($product));

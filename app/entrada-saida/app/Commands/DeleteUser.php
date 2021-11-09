@@ -63,13 +63,15 @@ class DeleteUser extends Command
                 // obtendo os dados do produto selecionado no banco de dados
                 $user = User::find($id);
 
+                // se o usuario não existir:
                 if (is_null($user)) {
 
+                    // envia mensagem
                     $this->info('Favor informar um ID válido!');
                 }
             } while (is_null($user));
 
-            if ($this->confirm("Deseja realmente remover o usuárop: $user->name?", false)) {
+            if ($this->confirm("Deseja realmente remover o usuário: $user->name?", false)) {
 
                 // removendo os dados no banco de dados
                 $user->delete();
