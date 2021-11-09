@@ -17,10 +17,9 @@ class Sale extends Model
         'total'
     ];
 
-    // função que representa o relacionamento nxn entre Product e Sale
+    // função para retornar os produtos da venda
     public function products()
     {
-
-        return $this->belongsToMany(Product::class);
+        return $this->belongsToMany(Product::class)->withPivot('qtd')->withPivot('value');
     }
 }
