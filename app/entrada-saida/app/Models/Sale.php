@@ -17,7 +17,7 @@ class Sale extends Model
         'total'
     ];
 
-    // função para retornar os produtos da venda
+    // função para retornar os produtos da venda, com colunas pivot de qtd e value da tabela product_sale
     public function products()
     {
         return $this->belongsToMany(Product::class)->withPivot('qtd')->withPivot('value');

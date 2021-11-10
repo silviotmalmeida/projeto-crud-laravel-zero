@@ -91,3 +91,10 @@ php application make:model Sale -m
 php application make:migration create_product_sale_table
 exit
 exit
+php application make:command ListSales
+cd root/entrada-saida/
+php application make:command ListSales
+exit
+cd root/entrada-saida/
+php application make:command ListClients
+exit

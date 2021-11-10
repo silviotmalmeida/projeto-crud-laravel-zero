@@ -6,7 +6,7 @@ use App\Models\Client;
 use Illuminate\Console\Scheduling\Schedule;
 use LaravelZero\Framework\Commands\Command;
 
-class ListClient extends Command
+class ListClients extends Command
 {
     /**
      * The signature of the command.
