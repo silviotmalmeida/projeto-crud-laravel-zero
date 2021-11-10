@@ -42,13 +42,16 @@ class ListProducts extends Command
         if ($products->isEmpty()) {
 
             // imprimindo mensagem
-            $this->info('Não existem produtos cadastrados!');
-            $this->info('');
+            $this->info("Não existem produtos cadastrados!\n");
+
+            // encerra o programa
+            return;
         }
         // senao prossegue:
         else {
 
             // imprimindo tabela de registros na tela
+            $this->info('Lista de Produtos');
             $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
             $this->info('');
         }

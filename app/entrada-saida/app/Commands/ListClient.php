@@ -42,15 +42,18 @@ class ListClient extends Command
         if ($clients->isEmpty()) {
 
             // imprimindo mensagem
-            $this->info('Não existem clientes cadastrados!');
-            $this->info('');
+            $this->info("Não existem clientes cadastrados!\n");
+
+            // encerra o programa
+            return;
         }
         // senao prossegue:
         else {
 
             // imprimindo tabela de registros na tela
+            $this->info('Lista de Clientes');
             $this->table(['ID', 'Nome', 'Email', 'Whatsapp'], $clients);
-            $this->info('');
+            $this->info('');;
         }
     }
 

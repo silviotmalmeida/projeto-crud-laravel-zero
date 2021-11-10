@@ -44,11 +44,15 @@ class ListUsers extends Command
             // imprimindo mensagem
             $this->info('Não existem usuários cadastrados!');
             $this->info('');
+
+            // encerra o programa
+            return;
         }
         // senao prossegue:
         else {
 
             // imprimindo tabela de registros na tela
+            $this->info('Lista de Usuários');
             $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
             $this->info('');
         }

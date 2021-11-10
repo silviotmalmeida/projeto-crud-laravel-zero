@@ -39,13 +39,13 @@ class AddUser extends Command
         $this->info('Cadastro de usuário');
 
         // pergunta o nome
-        $name = $this->ask('Nome:');
+        $name = $this->ask('Nome');
 
         // pergunta a descricao
-        $username = $this->ask('Usuário:');
+        $username = $this->ask('Usuário');
 
         // pergunta o valor
-        $password = $this->ask('Senha:');
+        $password = $this->ask('Senha');
 
         // parando a execucao e imprimindo os valores na tela
         // dd(compact('name', 'username', 'password'));
@@ -54,7 +54,7 @@ class AddUser extends Command
         $user = User::create(compact('name', 'username', 'password'));
 
         // exibe a mensagem de sucesso
-        $this->info("Usuário $user->username cadastrado com sucesso!");
+        $this->info("Usuário $user->username cadastrado com sucesso!\n");
     }
 
     /**

@@ -39,13 +39,13 @@ class AddClient extends Command
         $this->info('Cadastro de cliente');
 
         // pergunta o nome
-        $name = $this->ask('Nome:');
+        $name = $this->ask('Nome');
 
         // pergunta o email
-        $email = $this->ask('Email:');
+        $email = $this->ask('Email');
 
         // pergunta o whatsapp
-        $whatsapp = $this->ask('Whatsapp:');
+        $whatsapp = $this->ask('Whatsapp');
 
         // parando a execucao e imprimindo os valores na tela
         // dd(compact('name', 'email', 'whatsapp'));
@@ -54,7 +54,7 @@ class AddClient extends Command
         $client = Client::create(compact('name', 'email', 'whatsapp'));
 
         // exibe a mensagem de sucesso
-        $this->info("Cliente $client->name cadastrado com sucesso!");
+        $this->info("Cliente $client->name cadastrado com sucesso!\n");
     }
 
     /**

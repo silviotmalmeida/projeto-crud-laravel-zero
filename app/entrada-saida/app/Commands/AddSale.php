@@ -42,31 +42,15 @@ class AddSale extends Command
         // criando o carrinho
         $cart = [];
 
+        // constante de mínimo estoque
+        $minimumInventory = 5;
+
         // laço para seleção do usuário
         // sera repetido ate ser fornecido um id valido
         do {
 
-            // obtendo os usuarios cadastrados no banco de dados, conforme atributos abaixo:
-            $users = User::all(['id', 'name', 'username', 'password']);
-
-            // caso não retornem resultados:
-            if ($users->isEmpty()) {
-
-                // imprimindo mensagem
-                $this->info('Não existem usuários cadastrados!');
-                $this->info('');
-
-                // encerra o programa
-                return;
-            }
-            // senao prossegue:
-            else {
-
-                // imprimindo tabela de registros na tela
-                $this->info('Lista de Usuários');
-                $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
-                $this->info('');
-            }
+            // exibindo os usuarios cadastrados
+            $this->call('user:list');
 
             // pergunta o ID
             $user_id = $this->ask('Informe o ID do usuário vendedor:');
@@ -78,7 +62,7 @@ class AddSale extends Command
             if (is_null($user)) {
 
                 // envia mensagem
-                $this->info('Favor informar um ID válido!');
+                $this->info("Favor informar um ID válido!\n");
             }
             // senão:
             else {
@@ -92,27 +76,8 @@ class AddSale extends Command
         // sera repetido ate ser fornecido um id valido
         do {
 
-            // obtendo os clientes cadastrados no banco de dados, conforme atributos abaixo:
-            $clients = Client::all(['id', 'name', 'email', 'whatsapp']);
-
-            // caso não retornem resultados:
-            if ($clients->isEmpty()) {
-
-                // imprimindo mensagem
-                $this->info('Não existem clientes cadastrados!');
-                $this->info('');
-
-                // encerra o programa
-                return;
-            }
-            // senao prossegue:
-            else {
-
-                // imprimindo tabela de registros na tela
-                $this->info('Lista de Clientes');
-                $this->table(['ID', 'Nome', 'Email', 'Whatsapp'], $clients);
-                $this->info('');
-            }
+            // exibindo os clientes cadastrados
+            $this->call('client:list');
 
             // pergunta o ID
             $client_id = $this->ask('Informe o ID do cliente comprador:');
@@ -123,8 +88,20 @@ class AddSale extends Command
             // se o cliente não existir:
             if (is_null($client)) {
 
-                // envia mensagem
-                $this->info('Favor informar um ID válido!');
+                // envia pergunta de cadastro de novo cliente
+                // em caso positivo:
+                $this->info("Cliente não cadastrado!\n");
+                if ($this->confirm('Deseja cadastrar um novo cliente?', false)) {
+
+                    // inicia o formulário de cadastro
+                    $this->call('client:add');
+                }
+                // senão:
+                else {
+
+                    // envia mensagem
+                    $this->info("Favor informar um ID válido!\n");
+                }
             }
             // senão:
             else {
@@ -138,66 +115,51 @@ class AddSale extends Command
         // sera repetido ate o dígito zero ser digitado
         do {
 
+            // exibindo os produtos cadastrados
+            $this->call('product:list');
+
             // obtendo os produtos cadastrados no banco de dados, conforme atributos abaixo:
             $products = Product::all(['id', 'name', 'description', 'value', 'qtd']);
 
-            // caso não retornem resultados:
-            if ($products->isEmpty()) {
+            // pergunta o id do produto para incluir no carrinho, se deixar vazio assume valor zero
+            $id = $this->ask('Informe o código do produto. (Para sair digite 0)', 0);
 
-                // imprimindo mensagem
-                $this->info('Não existem produtos cadastrados!');
-                $this->info('');
-                $id = 0;
-            }
-            // senao prossegue:
-            else {
+            // se o valor informado for diferente de zero
+            if ($id != 0) {
 
-                // imprimindo tabela de registros na tela
-                $this->info('Lista de Produtos');
-                $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
-                $this->info('');
+                // obtendo os dados do produto selecionado no banco de dados
+                $product = Product::find($id);
 
-                // pergunta o id do produto para incluir no carrinho, se deixar vazio assume valor zero
-                $id = $this->ask('Informe o código do produto. (Para sair digite 0)', 0);
+                // se o produto não existir:
+                if (is_null($product)) {
 
-                // se o valor informado for diferente de zero
-                if ($id != 0) {
+                    // envia mensagem
+                    $this->info("Favor informar um ID válido!\n");
+                }
+                // senão
+                else {
 
-                    // obtendo os dados do produto selecionado no banco de dados
-                    $product = Product::find($id);
+                    // obtendo a quantidade de produtos em estoque
+                    $avaiableQtd = $product->qtd - $minimumInventory;
 
-                    // se o produto não existir:
-                    if (is_null($product)) {
+                    // pergunta qual a quantidades do produto na venda
+                    $product->qtd = $this->ask("Produto: $product->name. Informe a quantidade");
 
-                        // envia mensagem
-                        $this->info('Favor informar um ID válido!');
+                    // se o estoque disponível for maior ou igual a quantidade solicitada:
+                    if ($avaiableQtd >= $product->qtd) {
+
+                        // removendo os atributos desnecessários
+                        unset($product->created_at);
+                        unset($product->updated_at);
+
+                        // adicionando o produto ao carrinho
+                        $cart[] = $product;
+                        $this->info("Produto: $product->name. Quantidade: $product->qtd. Adicionado ao carrinho.\n");
                     }
                     // senão
                     else {
-
-                        // obtendo a quantidade de produtos em estoque
-                        $avaiableQtd = $product->qtd;
-
-                        // pergunta qual a quantidades do produto na venda
-                        $product->qtd = $this->ask("Produto: $product->name. Informe a quantidade");
-
-                        // se o estoque disponível for maior ou igual a quantidade solicitada:
-                        if ($avaiableQtd >= $product->qtd) {
-
-                            // removendo os atributos desnecessários
-                            unset($product->created_at);
-                            unset($product->updated_at);
-
-                            // adicionando o produto ao carrinho
-                            $cart[] = $product;
-                            $this->info("Produto: $product->name. Quantidade: $product->qtd. Adicionado ao carrinho.\n");
-                        }
-                        // senão
-                        else {
-                            // envia mensagem
-                            $this->info("Produto: $product->name. Com estoque insuficiente para esta venda. Disponível: $avaiableQtd.\n");
-                            $this->info('');
-                        }
+                        // envia mensagem
+                        $this->info("Produto: $product->name. Com estoque insuficiente para esta venda. Disponível: $avaiableQtd.\n");
                     }
                 }
             }
@@ -207,8 +169,7 @@ class AddSale extends Command
         if (count($cart) === 0) {
 
             // envia mensagem
-            $this->info('Carrinho vazio.');
-            $this->info('');
+            $this->info("Carrinho vazio.\n");
         }
         // senão
         else {
@@ -219,6 +180,7 @@ class AddSale extends Command
             // laço para verificação do estoque de produtos
             do {
 
+                // inicializando a variável de controle do laço
                 $validCart = true;
 
                 // iterando sobre os itens do carrinho para verificar se tem estoque sufuciente
@@ -227,15 +189,25 @@ class AddSale extends Command
                     // obtendo os dados do produto selecionado no banco de dados
                     $product = Product::find($item->id);
 
-                    if ($product->qtd < $item->qtd) {
+                    // obtendo a quantidade de produtos em estoque
+                    $avaiableQtd = $product->qtd - $minimumInventory;
 
-                        $item->qtd = $product->qtd;
+                    // se não houver estoque suficiente:
+                    if ($avaiableQtd < $item->qtd) {
 
+                        // equipara a quantidade ao estoque
+                        $item->qtd = $avaiableQtd;
+
+                        // se o estoque estiver zerado:
                         if ($product->qtd === 0) {
 
+                            // envia mensagem de retirada do produto
                             $this->info("Produto: $item->name. Sem estoque. Item será removido do carrinho.\n");
-                        } else {
+                        }
+                        // se não existir estoque suficiente:
+                        else {
 
+                            // envia mensagem de alteração da quantidade de itens
                             $this->info("Produto: $item->name. Sem estoque suficiente. Quantidade foi alterada para: $item->qtd. Adicionado ao carrinho.\n");
                         }
 
@@ -273,16 +245,19 @@ class AddSale extends Command
             // converte o carrinho validado em uma coleção
             $validatedCart = collect($validatedCart);
 
-            // imprimindo tabela do carrinho na tela
+            // imprimindo tabela do carrinho
             $this->info("CARRINHO:");
             $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade', 'Valor Total(R$)'], $validatedCart);
             $this->info('');
 
+            // imprimindo dados da venda
             $this->info("VALOR TOTAL (R$): $total");
             $this->info("VENDEDOR: $user_name");
             $this->info("COMPRADOR: $client_name");
             $this->info('');
 
+            // envia pergunta de confirmação da venda
+            // em caso positivo:
             if ($this->confirm('Finalizar venda?')) {
 
                 // laço para atualizacao dos estoques dos produtos
@@ -304,6 +279,15 @@ class AddSale extends Command
 
                 // inserindo dados na tabela de relacionamento
                 $sale->products()->sync($sale_products);
+
+                // imprimindo mensagem de sucesso
+                $this->info("Venda efetuada com sucesso!\n");
+            }
+            // senão:
+            else {
+
+                // imprimindo mensagem de cancelamento
+                $this->info("Venda cancelada!\n");
             }
         }
     }

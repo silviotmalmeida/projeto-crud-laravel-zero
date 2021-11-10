@@ -39,16 +39,16 @@ class AddProduct extends Command
         $this->info('Cadastro de produto');
 
         // pergunta o nome
-        $name = $this->ask('Nome:');
+        $name = $this->ask('Nome');
 
         // pergunta a descricao
-        $description = $this->ask('Descricao:');
+        $description = $this->ask('Descricao');
 
         // pergunta o valor
-        $value = $this->ask('Valor(R$):');
+        $value = $this->ask('Valor(R$)');
 
         // pergunta a quantidade
-        $qtd = $this->ask('Quantidade:', 1);
+        $qtd = $this->ask('Quantidade', 1);
 
         // parando a execucao e imprimindo os valores na tela
         // dd(compact('name', 'description', 'value', 'qtd'));
@@ -57,7 +57,7 @@ class AddProduct extends Command
         $product = Product::create(compact('name', 'description', 'value', 'qtd'));
 
         // exibe a mensagem de sucesso
-        $this->info("Produto $product->name cadastrado com sucesso!");
+        $this->info("Produto $product->name cadastrado com sucesso!\n");
     }
 
     /**

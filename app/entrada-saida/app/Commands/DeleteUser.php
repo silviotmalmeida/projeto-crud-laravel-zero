@@ -35,54 +35,41 @@ class DeleteUser extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os usuarios cadastrados no banco de dados, conforme atributos abaixo:
-        $users = User::all(['id', 'name', 'username', 'password',]);
-
-        // caso não retornem resultados:
-        if ($users->isEmpty()) {
-
-            // imprimindo mensagem
-            $this->info('Não existem usuários cadastrados!');
-            $this->info('');
-        }
-        // senao prossegue:
-        else {
-
-            // imprimindo tabela de registros na tela
-            $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
+        // laco de verificação de id valido.
+        // sera repetido ate ser fornecido um id valido
+        do {
 
             // exibe o titulo
             $this->info('Remoção de usuário');
 
-            // laco de verificação de id valido.
-            // sera repetido ate ser fornecido um id valido
-            do {
-                // pergunta o ID
-                $id = $this->ask('Informe o ID do usuário a ser removido:');
+            // exibindo os usuarios cadastrados
+            $this->call('user:list');
 
-                // obtendo os dados do produto selecionado no banco de dados
-                $user = User::find($id);
+            // pergunta o ID
+            $id = $this->ask('Informe o ID do usuário a ser removido:');
 
-                // se o usuario não existir:
-                if (is_null($user)) {
+            // obtendo os dados do produto selecionado no banco de dados
+            $user = User::find($id);
 
-                    // envia mensagem
-                    $this->info('Favor informar um ID válido!');
-                }
-            } while (is_null($user));
+            // se o usuario não existir:
+            if (is_null($user)) {
 
-            if ($this->confirm("Deseja realmente remover o usuário: $user->name?", false)) {
-
-                // removendo os dados no banco de dados
-                $user->delete();
-
-                // exibe a mensagem de sucesso
-                $this->info("Usuário $user->name removido com sucesso!");
-            } else {
-
-                // exibe a mensagem de cancelamento
-                $this->info("Operação cancelada!");
+                // envia mensagem
+                $this->info("Favor informar um ID válido!\n");
             }
+        } while (is_null($user));
+
+        if ($this->confirm("Deseja realmente remover o usuário: $user->name?", false)) {
+
+            // removendo os dados no banco de dados
+            $user->delete();
+
+            // exibe a mensagem de sucesso
+            $this->info("Usuário $user->name removido com sucesso!\n");
+        } else {
+
+            // exibe a mensagem de cancelamento
+            $this->info("Operação cancelada!\n");
         }
     }
 

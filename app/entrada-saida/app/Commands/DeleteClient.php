@@ -35,54 +35,41 @@ class DeleteClient extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os clientes cadastrados no banco de dados, conforme atributos abaixo:
-        $clients = Client::all(['id', 'name', 'email', 'whatsapp']);
-
-        // caso não retornem resultados:
-        if ($clients->isEmpty()) {
-
-            // imprimindo mensagem
-            $this->info('Não existem clientes cadastrados!');
-            $this->info('');
-        }
-        // senao prossegue:
-        else {
-
-            // imprimindo tabela de registros na tela
-            $this->table(['ID', 'Nome', 'Email', 'Whatsapp'], $clients);
+        // laco de verificação de id valido.
+        // sera repetido ate ser fornecido um id valido
+        do {
 
             // exibe o titulo
             $this->info('Remoção de cliente');
 
-            // laco de verificação de id valido.
-            // sera repetido ate ser fornecido um id valido
-            do {
-                // pergunta o ID
-                $id = $this->ask('Informe o ID do cliente a ser removido:');
+            // exibindo os clientes cadastrados
+            $this->call('client:list');
 
-                // obtendo os dados do cliente selecionado no banco de dados
-                $client = Client::find($id);
+            // pergunta o ID
+            $id = $this->ask('Informe o ID do cliente a ser removido:');
 
-                // se o cliente não existir:
-                if (is_null($client)) {
+            // obtendo os dados do cliente selecionado no banco de dados
+            $client = Client::find($id);
 
-                    // envia mensagem
-                    $this->info('Favor informar um ID válido!');
-                }
-            } while (is_null($client));
+            // se o cliente não existir:
+            if (is_null($client)) {
 
-            if ($this->confirm("Deseja realmente remover o cliente: $client->name?", false)) {
-
-                // removendo os dados no banco de dados
-                $client->delete();
-
-                // exibe a mensagem de sucesso
-                $this->info("Cliente $client->name removido com sucesso!");
-            } else {
-
-                // exibe a mensagem de cancelamento
-                $this->info("Operação cancelada!");
+                // envia mensagem
+                $this->info("Favor informar um ID válido!\n");
             }
+        } while (is_null($client));
+
+        if ($this->confirm("Deseja realmente remover o cliente: $client->name?", false)) {
+
+            // removendo os dados no banco de dados
+            $client->delete();
+
+            // exibe a mensagem de sucesso
+            $this->info("Cliente $client->name removido com sucesso!\n");
+        } else {
+
+            // exibe a mensagem de cancelamento
+            $this->info("Operação cancelada!\n");
         }
     }
 

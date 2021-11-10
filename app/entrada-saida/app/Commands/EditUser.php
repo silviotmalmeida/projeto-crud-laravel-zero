@@ -35,60 +35,47 @@ class EditUser extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os usuarios cadastrados no banco de dados, conforme atributos abaixo:
-        $users = User::all(['id', 'name', 'username', 'password']);
-
-        // caso não retornem resultados:
-        if ($users->isEmpty()) {
-
-            // imprimindo mensagem
-            $this->info('Não existem usuários cadastrados!');
-            $this->info('');
-        }
-        // senao prossegue:
-        else {
-
-            // imprimindo tabela de registros na tela
-            $this->table(['ID', 'Nome', 'Usuário', 'Senha'], $users);
+        // laco de verificação de id valido.
+        // sera repetido ate ser fornecido um id valido
+        do {
 
             // exibe o titulo
             $this->info('Edição de usuário');
 
-            // laco de verificação de id valido.
-            // sera repetido ate ser fornecido um id valido
-            do {
-                // pergunta o ID
-                $id = $this->ask('Informe o ID do usuários a ser editado:');
+            // exibindo os usuarios cadastrados
+            $this->call('user:list');
 
-                // obtendo os dados do usuario selecionado no banco de dados
-                $user = User::find($id);
+            // pergunta o ID
+            $id = $this->ask('Informe o ID do usuários a ser editado:');
 
-                // se o usuario não existir:
-                if (is_null($user)) {
+            // obtendo os dados do usuario selecionado no banco de dados
+            $user = User::find($id);
 
-                    // envia mensagem
-                    $this->info('Favor informar um ID válido!');
-                }
-            } while (is_null($user));
+            // se o usuario não existir:
+            if (is_null($user)) {
 
-            // pergunta o nome
-            $name = $this->ask('Nome:', $user->name);
+                // envia mensagem
+                $this->info("Favor informar um ID válido!\n");
+            }
+        } while (is_null($user));
 
-            // pergunta a descricao
-            $username = $this->ask('Usuário:', $user->username);
+        // pergunta o nome
+        $name = $this->ask('Nome', $user->name);
 
-            // pergunta o valor
-            $password = $this->ask('Senha:', $user->password);
+        // pergunta a descricao
+        $username = $this->ask('Usuário', $user->username);
 
-            // parando a execucao e imprimindo os valores na tela
-            // dd(compact('name', 'username', 'password'));
+        // pergunta o valor
+        $password = $this->ask('Senha', $user->password);
 
-            // inserindo os dados no banco de dados
-            $user->update(compact('name', 'username', 'password'));
+        // parando a execucao e imprimindo os valores na tela
+        // dd(compact('name', 'username', 'password'));
 
-            // exibe a mensagem de sucesso
-            $this->info("Usuário $user->username editado com sucesso!");
-        }
+        // inserindo os dados no banco de dados
+        $user->update(compact('name', 'username', 'password'));
+
+        // exibe a mensagem de sucesso
+        $this->info("Usuário $user->username editado com sucesso!\n");
     }
 
     /**

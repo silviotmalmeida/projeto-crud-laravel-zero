@@ -35,54 +35,41 @@ class DeleteProduct extends Command
     // acoes do comando
     public function handle()
     {
-        // obtendo os produtos cadastrados no banco de dados, conforme atributos abaixo:
-        $products = Product::all(['id', 'name', 'description', 'value', 'qtd']);
-
-        // caso não retornem resultados:
-        if ($products->isEmpty()) {
-
-            // imprimindo mensagem
-            $this->info('Não existem produtos cadastrados!');
-            $this->info('');
-        }
-        // senao prossegue:
-        else {
-
-            // imprimindo tabela de registros na tela
-            $this->table(['ID', 'Nome', 'Descrição', 'Valor(R$)', 'Quantidade'], $products);
+        // laco de verificação de id valido.
+        // sera repetido ate ser fornecido um id valido
+        do {
 
             // exibe o titulo
             $this->info('Remoção de produto');
 
-            // laco de verificação de id valido.
-            // sera repetido ate ser fornecido um id valido
-            do {
-                // pergunta o ID
-                $id = $this->ask('Informe o ID do produto a ser removido:');
+            // exibindo os produtos cadastrados
+            $this->call('product:list');
 
-                // obtendo os dados do produto selecionado no banco de dados
-                $product = Product::find($id);
+            // pergunta o ID
+            $id = $this->ask('Informe o ID do produto a ser removido:');
 
-                // se o produto não existir:
-                if (is_null($product)) {
+            // obtendo os dados do produto selecionado no banco de dados
+            $product = Product::find($id);
 
-                    // envia mensagem
-                    $this->info('Favor informar um ID válido!');
-                }
-            } while (is_null($product));
+            // se o produto não existir:
+            if (is_null($product)) {
 
-            if ($this->confirm("Deseja realmente remover o produto: $product->name?", false)) {
-
-                // removendo os dados no banco de dados
-                $product->delete();
-
-                // exibe a mensagem de sucesso
-                $this->info("Produto $product->name removido com sucesso!");
-            } else {
-
-                // exibe a mensagem de cancelamento
-                $this->info("Operação cancelada!");
+                // envia mensagem
+                $this->info("Favor informar um ID válido!\n");
             }
+        } while (is_null($product));
+
+        if ($this->confirm("Deseja realmente remover o produto: $product->name?", false)) {
+
+            // removendo os dados no banco de dados
+            $product->delete();
+
+            // exibe a mensagem de sucesso
+            $this->info("Produto $product->name removido com sucesso!\n");
+        } else {
+
+            // exibe a mensagem de cancelamento
+            $this->info("Operação cancelada!\n");
         }
     }
 
