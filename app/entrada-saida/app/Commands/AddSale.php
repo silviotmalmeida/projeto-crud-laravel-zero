@@ -17,7 +17,8 @@ class AddSale extends Command
      * @var string
      */
     // texto do comando
-    protected $signature = 'sale:add';
+    // os argumentos user_id e user_name serão do usuário logado
+    protected $signature = 'sale:add {user_id} {user_name}';
 
     /**
      * The description of the command.
@@ -45,32 +46,10 @@ class AddSale extends Command
         // constante de mínimo estoque
         $minimumInventory = 5;
 
-        // laço para seleção do usuário
-        // sera repetido ate ser fornecido um id valido
-        do {
-
-            // exibindo os usuarios cadastrados
-            $this->call('user:list');
-
-            // pergunta o ID
-            $user_id = $this->ask('Informe o ID do usuário vendedor:');
-
-            // obtendo os dados do produto selecionado no banco de dados
-            $user = User::find($user_id);
-
-            // se o usuario não existir:
-            if (is_null($user)) {
-
-                // envia mensagem
-                $this->info("Favor informar um ID válido!\n");
-            }
-            // senão:
-            else {
-
-                // coleta o nome do usuário vendedor
-                $user_name = $user->name;
-            }
-        } while (is_null($user));
+        // obtendo os dados do usuário logado
+        // $user = $this->argument('user');
+        $user_id = $this->argument('user_id');
+        $user_name = $this->argument('user_name');
 
         // laço para seleção do cliente
         // sera repetido ate ser fornecido um id valido

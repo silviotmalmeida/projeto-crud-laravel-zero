@@ -38,12 +38,12 @@ class ListSales extends Command
         $sales = Sale::all(['id', 'created_at', 'total']);
 
         // ajustando os dados de data e hora para exibição
-        $sales = $sales->map(function($sale){
+        $sales = $sales->map(function ($sale) {
 
-            return[
-                'id'=>$sale->id,
-                'created_at'=>$sale->created_at->format('d/m/y H:i:s'),
-                'total'=>$sale->total
+            return [
+                'id' => $sale->id,
+                'created_at' => $sale->created_at->format('d/m/y H:i:s'),
+                'total' => $sale->total
             ];
         });
 
@@ -54,7 +54,7 @@ class ListSales extends Command
             $this->info("Não existem vendas cadastradas!\n");
 
             // encerra o programa
-            return;
+            die;
         }
         // senao prossegue:
         else {
@@ -65,56 +65,58 @@ class ListSales extends Command
             $this->info('');;
         }
 
-        // pergunta o ID
-        $id = $this->ask('Informe o ID da venda a ser detalhada');
+        // laço para seleção da venda
+        // sera repetido ate ser fornecido um id valido
+        do {
 
-        // obtendo os dados do cliente selecionado no banco de dados
-        $sale = Sale::find($id);
+            // pergunta o ID
+            $id = $this->ask('Informe o ID da venda a ser detalhada');
 
-        // se a venda não existir:
-        if (is_null($sale)) {
+            // obtendo os dados do cliente selecionado no banco de dados
+            $sale = Sale::find($id);
 
-            // envia mensagem
-            $this->info("Favor informar um ID válido!\n");
+            // se a venda não existir:
+            if (is_null($sale)) {
 
-            // encerra a execução
-            return;
-        }
-        // se a venda existir:
-        else{
+                // envia mensagem
+                $this->info("Favor informar um ID válido!\n");
+            }
+            // se a venda existir:
+            else {
 
-            // obtendo os dados do usuário
-            $user = User::find($sale->user_id);
+                // obtendo os dados do usuário
+                $user = User::find($sale->user_id);
 
-            // obtendo os dados do cliente
-            $client = Client::find($sale->client_id);
+                // obtendo os dados do cliente
+                $client = Client::find($sale->client_id);
 
-            // obtendo e formatando os dados dos produtos
-            $products = $sale->products->map(function($product){
+                // obtendo e formatando os dados dos produtos
+                $products = $sale->products->map(function ($product) {
 
-                return [
-                    // valores da tabela product
-                    'name'=>$product->name,
+                    return [
+                        // valores da tabela product
+                        'name' => $product->name,
 
-                    // valores da tabela pivot product_sale
-                    'qtd'=>$product->pivot->qtd,
-                    'value'=>$product->pivot->value,
-                    'total'=>$product->pivot->qtd*$product->pivot->value
-                ];
-            });
+                        // valores da tabela pivot product_sale
+                        'qtd' => $product->pivot->qtd,
+                        'value' => $product->pivot->value,
+                        'total' => $product->pivot->qtd * $product->pivot->value
+                    ];
+                });
 
-            // imprimindo tabela de registros na tela
-            $this->info("Detalhamento da Venda $sale->id\n");
+                // imprimindo tabela de registros na tela
+                $this->info("Detalhamento da Venda $sale->id\n");
 
-            $this->info("Nome do usuário: $user->name");
-            $this->info("Nome do cliente: $client->name");
-            $this->info("Valor Total (R$): $sale->total");
-            $this->info("Data e Hora: " . $sale->created_at->format('d/m/y H:i:s') . "\n");
+                $this->info("Nome do usuário: $user->name");
+                $this->info("Nome do cliente: $client->name");
+                $this->info("Valor Total (R$): $sale->total");
+                $this->info("Data e Hora: " . $sale->created_at->format('d/m/y H:i:s') . "\n");
 
-            $this->info('Lista de Produtos');
-            $this->table(['Nome', 'Qtd', 'Valor Unitário(R$)', 'Valor Total(R$)'], $products);
-            $this->info('');
-        }
+                $this->info('Lista de Produtos');
+                $this->table(['Nome', 'Qtd', 'Valor Unitário(R$)', 'Valor Total(R$)'], $products);
+                $this->info('');
+            }
+        } while (is_null($sale));
     }
 
     /**

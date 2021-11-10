@@ -45,7 +45,7 @@ class ListClients extends Command
             $this->info("Não existem clientes cadastrados!\n");
 
             // encerra o programa
-            return;
+            die;
         }
         // senao prossegue:
         else {

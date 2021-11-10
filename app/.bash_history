@@ -98,3 +98,7 @@ exit
 cd root/entrada-saida/
 php application make:command ListClients
 exit
+cd root/entrada-saida/
+php application make:command Menu
+php application app:install menu
+exit

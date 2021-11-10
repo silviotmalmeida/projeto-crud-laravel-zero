@@ -46,7 +46,7 @@ class ListUsers extends Command
             $this->info('');
 
             // encerra o programa
-            return;
+            die;
         }
         // senao prossegue:
         else {
