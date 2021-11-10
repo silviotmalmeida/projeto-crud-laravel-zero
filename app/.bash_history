@@ -102,3 +102,10 @@ cd root/entrada-saida/
 php application make:command Menu
 php application app:install menu
 exit
+cd root/entrada-saida/
+composer update
+cd root/entrada-saida/exit
+exit
+exit
+cd root/entrada-saida/; composer install
+cd root/entrada-saida/; composer install;exit
