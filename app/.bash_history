@@ -109,3 +109,4 @@ exit
 exit
 cd root/entrada-saida/; composer install
 cd root/entrada-saida/; composer install;exit
+cd root/entrada-saida/; composer install; exit;
